@@ -22,15 +22,20 @@ Route::group(['middleware' => 'api', 'prefix' => 'auth'], function ($router) {
     Route::post('refresh', [AuthController::class, 'refresh']);
     Route::post('me', [AuthController::class, 'me']);
 
-    Route::middleware(['role:user'])->group(function () {
+    Route::middleware(['role:admin'])->group(function () {
+        Route::get('/surveys', [SurveyController::class, 'index']);
+        Route::post('register', [AuthController::class, 'register']);
+    });
+    
+    Route::middleware(['role:alumni'])->group(function () {
         Route::get('/surveys/{id}', [SurveyController::class, 'show']);
         Route::post('/surveys', [SurveyController::class, 'store']);
         Route::put('/surveys/{id}', [SurveyController::class, 'update']);
         Route::delete('/surveys/{id}', [SurveyController::class, 'destroy']);
     });
 
-    Route::middleware(['role:admin'])->group(function () {
-        Route::get('/surveys', [SurveyController::class, 'index']);
-        Route::post('register', [AuthController::class, 'register']);
+ 
+
+    Route::middleware(['role:perusahaan'])->group(function () {
     });
 });

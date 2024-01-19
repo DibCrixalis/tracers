@@ -35,8 +35,10 @@ class AuthController extends Controller
 
         try {
             $userData = [
-                'name' => $request->input('name'),
-                'email' => $request->input('email'),
+                // 'name' => $request->input('name'),
+                // 'email' => $request->input('email'),
+                'roles' => $request->input('roles'),
+                'npm' => $request->input('npm'),
                 'password' => $request->input('password'),
             ];
 
@@ -51,9 +53,10 @@ class AuthController extends Controller
     protected function validateUserRequest(Request $request)
     {
         return Validator::make($request->all(), [
-            'name' => 'required|string',
-            'email' => 'required|email|unique:users',
-            'password' => ['required', 'string', 'min:6', Password::defaults()],
+            // 'name' => 'required|string',
+            // 'email' => 'email|unique:users',
+            'npm' => 'string|unique:users',
+            'password' => ['required', 'string', 'min:2', Password::defaults()],
         ], [
             'email.unique' => 'Email is already taken.',
         ]);
@@ -61,10 +64,10 @@ class AuthController extends Controller
 
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        $credentials = $request->only('name','email', 'npm' , 'password');
 
         if (!$token = $this->userRepository->attemptLogin($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['error' => 'username or password incorrect'], 401);
         }
 
         return $this->respondWithToken($token);

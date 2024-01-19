@@ -36,6 +36,7 @@ class User extends Authenticatable implements JWTSubject
         'email',
         'password',
         'roles',
+        'npm',
     ];
 
     /**
@@ -84,7 +85,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function setRolesAttribute($value)
     {
-        if ($value === 'admin' || $value === 'user') {
+        if ($value === 'admin' || $value === 'alumni'|| $value === 'perusahaan') {
             $this->attributes['roles'] = $value;
         } else {
             $this->attributes['roles'] = 'User';
