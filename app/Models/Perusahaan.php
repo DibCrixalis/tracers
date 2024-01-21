@@ -2,15 +2,13 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Ramsey\Uuid\Uuid;
-use Laravel\Sanctum\HasApiTokens;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
+use Ramsey\Uuid\Uuid;
 
-class User extends Authenticatable implements JWTSubject
+class Perusahaan extends Model
 {
     use HasApiTokens, HasFactory, Notifiable;
 
@@ -35,8 +33,6 @@ class User extends Authenticatable implements JWTSubject
         'name',
         'email',
         'password',
-        'roles',
-        'nisn',
         'nama_pemilik',
         'alamat',
         'no_hp'
@@ -61,7 +57,7 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-      /**
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
@@ -81,17 +77,4 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function hasRole($role)
-    {
-        return $this->roles === $role;
-    }
-
-    public function setRolesAttribute($value)
-    {
-        if ($value === 'admin' || $value === 'alumni' || $value === 'company') {
-            $this->attributes['roles'] = $value;
-        } else {
-            $this->attributes['roles'] = 'User';
-        }
-    }
 }

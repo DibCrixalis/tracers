@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Repositories\Users;
+namespace App\Repositories\User;
 
 interface UserRepositoryInterface
 {
@@ -13,6 +13,6 @@ interface UserRepositoryInterface
     public function findByEmail(string $email);
 
     public function delete(string $userId);
-    
+
     public function attemptLogin(array $credentials);
 }

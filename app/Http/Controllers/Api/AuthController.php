@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Users\UserRepositoryInterface;
+use App\Repositories\Company\CompanyRepositoryInterface;
+use App\Repositories\User\UserRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -23,6 +24,7 @@ class AuthController extends Controller
     {
         $this->middleware('auth:api', ['except' => ['register', 'login']]);
         $this->userRepository = $userRepository;
+
     }
 
     public function register(Request $request)
@@ -35,10 +37,9 @@ class AuthController extends Controller
 
         try {
             $userData = [
-                // 'name' => $request->input('name'),
-                // 'email' => $request->input('email'),
+                'email' => $request->input('email'),
                 'roles' => $request->input('roles'),
-                'npm' => $request->input('npm'),
+                'nisn' => $request->input('nisn'),
                 'password' => $request->input('password'),
             ];
 
@@ -53,21 +54,37 @@ class AuthController extends Controller
     protected function validateUserRequest(Request $request)
     {
         return Validator::make($request->all(), [
-            // 'name' => 'required|string',
-            // 'email' => 'email|unique:users',
-            'npm' => 'string|unique:users',
+            'roles' => 'required|string',
+            'nisn' => 'nullable|string|unique:users',
+            'email' => 'nullable|email|unique:users',
+            'password' => ['required', 'string', 'min:2', Password::defaults()],
+        ], [
+            'nisn.unique' => 'Nisn is already taken.',
+            'email.unique' => 'Email is already taken.',
+        ]);
+    }
+
+   
+
+    protected function validateCompanyRequest(Request $request)
+    {
+        return Validator::make($request->all(), [
+            'name' => 'required|string',
+            'founder_name' => 'required|string',
+            'address' => 'required|string',
+            'phone_number' => ['required', 'numeric', 'unique:companies,phone_number'],
+            'email' => 'email|unique:companies',
             'password' => ['required', 'string', 'min:2', Password::defaults()],
         ], [
             'email.unique' => 'Email is already taken.',
         ]);
     }
-
     public function login(Request $request)
     {
-        $credentials = $request->only('name','email', 'npm' , 'password');
+        $credentials = $request->only('name','email', 'nisn' , 'password');
 
         if (!$token = $this->userRepository->attemptLogin($credentials)) {
-            return response()->json(['error' => 'username or password incorrect'], 401);
+            return response()->json(['error' => 'incorrect input'], 401);
         }
 
         return $this->respondWithToken($token);
