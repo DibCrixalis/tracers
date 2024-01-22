@@ -61,7 +61,7 @@ class User extends Authenticatable implements JWTSubject
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
-      /**
+    /**
      * Get the identifier that will be stored in the subject claim of the JWT.
      *
      * @return mixed
@@ -93,5 +93,20 @@ class User extends Authenticatable implements JWTSubject
         } else {
             $this->attributes['roles'] = 'User';
         }
+    }
+
+    public function continueStudy()
+    {
+        return $this->hasMany(ContinueStudy::class, 'user_id', 'id');
+    }
+
+    public function works()
+    {
+        return $this->hasMany(Work::class, 'user_id', 'id');
+    }
+
+    public function entrepreneurship()
+    {
+        return $this->hasMany(Entrepreneurship::class, 'user_id', 'id');
     }
 }

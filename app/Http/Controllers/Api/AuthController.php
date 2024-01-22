@@ -24,7 +24,6 @@ class AuthController extends Controller
     {
         $this->middleware('auth:api', ['except' => ['register', 'login']]);
         $this->userRepository = $userRepository;
-
     }
 
     public function register(Request $request)
@@ -64,7 +63,7 @@ class AuthController extends Controller
         ]);
     }
 
-   
+
 
     protected function validateCompanyRequest(Request $request)
     {
@@ -81,7 +80,7 @@ class AuthController extends Controller
     }
     public function login(Request $request)
     {
-        $credentials = $request->only('name','email', 'nisn' , 'password');
+        $credentials = $request->only('name', 'email', 'nisn', 'password');
 
         if (!$token = $this->userRepository->attemptLogin($credentials)) {
             return response()->json(['error' => 'incorrect input'], 401);
